@@ -73,7 +73,10 @@ STATE_ACTION_COMPARE_SLOTS = {
     "RoboCOIN": {"state_slot": ["left_eef", "right_eef"], "action_slot": ["left_eef", "right_eef"]},
     "RoboCOIN_add0130": {"state_slot": ["left_eef", "right_eef"], "action_slot": ["left_eef", "right_eef"]},
     "RoboCOIN_add1201": {"state_slot": ["left_eef", "right_eef"], "action_slot": ["left_eef", "right_eef"]},
-
+    "toutV2.1": {
+        "state_slot": ["left_eef", "right_eef"],
+        "action_slot": ["left_eef", "right_eef"]
+    },
     # RoboMindV1.0 and RoboMindV2.0: use left_joint+right_joint for L2 comparison (all robot types have joint)
     # Single-arm robots (franka_1rgb/3rgb, ur_1rgb, etc.) have left_joint zeroed in unified, which does not affect comparison, so all can be included
     "RoboMindV1.0": {"state_slot": ["left_joint", "right_joint"], "action_slot": ["left_joint", "right_joint"]},

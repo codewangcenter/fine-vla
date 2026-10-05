@@ -1,0 +1,29 @@
+{
+  "summary": {
+    "dataset": "toutV2.1",
+    "dataset_path": "D:\\datasets\\toutV2.1",
+    "l2_threshold": 0.2,
+    "total_problem_episodes": 0,
+    "frame_task_only": 0,
+    "l2_only": 0,
+    "both": 0,
+    "breakdown": {
+      "frame_too_short": 0,
+      "task_empty": 0,
+      "l2_abnormal": 0,
+      "parquet_corrupted": 0
+    },
+    "l2_statistics": {
+      "mean_l2": 0.0,
+      "median_l2": 0.0,
+      "std_l2": 0.0,
+      "min_l2": 0.0,
+      "max_l2": 0.0,
+      "p90_l2": 0.0,
+      "p95_l2": 0.0,
+      "p99_l2": 0.0,
+      "n_inf": 0
+    }
+  },
+  "toutV2.1": {}
+}

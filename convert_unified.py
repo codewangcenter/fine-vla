@@ -139,12 +139,28 @@ def extract_episode_data(parquet_path: str, modality_cfg: dict) -> tuple[dict, n
             col = df[original_key]
             first_val = col.iloc[0]
 
-            if isinstance(first_val, np.ndarray):
-                arr = np.stack(col.values).astype(np.float32)
+            def _flat_cell(v) -> np.ndarray:
+                """Convert one cell value into a flat 1-D float32 vector.
+
+                Handles three cases:
+                  - plain scalars (e.g. int64 columns)
+                  - 1-D vectors (parquet ``list<float>``)
+                  - nested/ragged arrays (parquet ``list<list<float>>``), which
+                    pandas exposes as object arrays whose elements are arrays.
+                    These must be stacked element-wise before flattening, since
+                    ``np.asarray(v, dtype=np.float32)`` cannot cast an object
+                    array of sub-arrays (it raises
+                    "only length-1 arrays can be converted to Python scalars").
+                """
+                a = np.asarray(v)
+                if a.dtype == object:
+                    a = np.stack([np.asarray(x, dtype=np.float32) for x in a.reshape(-1)])
+                return a.astype(np.float32).reshape(-1)
+
+            if isinstance(first_val, (np.ndarray, list)):
+                arr = np.stack([_flat_cell(v) for v in col.values])
             elif isinstance(first_val, (float, int, np.floating, np.integer)):
                 arr = col.values.astype(np.float32).reshape(N, 1)
-            elif isinstance(first_val, list):
-                arr = np.array(col.tolist(), dtype=np.float32)
             else:
                 raise TypeError(f"Unsupported type for '{original_key}': {type(first_val)}")
 
@@ -266,10 +282,27 @@ def save_unified_meta(output_dir: str):
 
 
 # ---- Parallel worker --------------------------------------------------------
-# Module-level global variables, automatically inherited by child processes in fork mode
+# Module-level global variables used by the worker function.
+# NOTE: On Linux (fork) these are inherited from the parent automatically, but on
+# Windows/macOS (spawn) the child re-imports this module fresh, so the values set
+# in main() would NOT be visible -- they must be pushed into each child via the
+# Pool `initializer` (see _init_worker below).
 _g_transform = None
 _g_modality_cfg = None
 _g_output_dir = None
+
+
+def _init_worker(transform, modality_cfg, output_dir):
+    """Pool initializer: publish the shared transform/config to each child process.
+
+    Required for spawn-based platforms (Windows/macOS). Without this the worker
+    would see _g_transform/_g_modality_cfg as None and fail with
+    "'NoneType' object has no attribute 'get'".
+    """
+    global _g_transform, _g_modality_cfg, _g_output_dir
+    _g_transform = transform
+    _g_modality_cfg = modality_cfg
+    _g_output_dir = output_dir
 
 
 def _convert_one_episode(ep_path: str) -> str | None:
@@ -391,7 +424,9 @@ def main():
         num_workers = min(NUM_WORKERS, len(todo_paths)) if todo_paths else 1
         print(f"Using multiprocessing.Pool with {num_workers} workers ...")
 
-        with multiprocessing.Pool(processes=num_workers) as pool:
+        with multiprocessing.Pool(processes=num_workers,
+                                  initializer=_init_worker,
+                                  initargs=(transform, modality_cfg, args.output_dir)) as pool:
             results = pool.imap_unordered(_convert_one_episode, todo_paths, chunksize=16)
             done = 0
             failed = 0

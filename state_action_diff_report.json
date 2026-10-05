@@ -1,0 +1,80 @@
+{
+  "state_slot": [
+    "left_eef",
+    "right_eef"
+  ],
+  "action_slot": [
+    "left_eef",
+    "right_eef"
+  ],
+  "metric": "range_norm_l2",
+  "threshold": 0.2,
+  "total_episodes": 10,
+  "valid_episodes": 10,
+  "flagged_episodes": [],
+  "statistics": {
+    "mean_l2": 0.0,
+    "median_l2": 0.0,
+    "std_l2": 0.0,
+    "min_l2": 0.0,
+    "max_l2": 0.0,
+    "p90_l2": 0.0,
+    "p95_l2": 0.0,
+    "p99_l2": 0.0,
+    "n_inf": 0
+  },
+  "episodes": [
+    {
+      "episode_name": "episode_000000.parquet",
+      "valid_frames": 2418,
+      "l2_score": 0.0
+    },
+    {
+      "episode_name": "episode_000001.parquet",
+      "valid_frames": 4683,
+      "l2_score": 0.0
+    },
+    {
+      "episode_name": "episode_000002.parquet",
+      "valid_frames": 1518,
+      "l2_score": 0.0
+    },
+    {
+      "episode_name": "episode_000003.parquet",
+      "valid_frames": 1530,
+      "l2_score": 0.0
+    },
+    {
+      "episode_name": "episode_000004.parquet",
+      "valid_frames": 2101,
+      "l2_score": 0.0
+    },
+    {
+      "episode_name": "episode_000005.parquet",
+      "valid_frames": 4913,
+      "l2_score": 0.0
+    },
+    {
+      "episode_name": "episode_000006.parquet",
+      "valid_frames": 2253,
+      "l2_score": 0.0
+    },
+    {
+      "episode_name": "episode_000007.parquet",
+      "valid_frames": 1364,
+      "l2_score": 0.0
+    },
+    {
+      "episode_name": "episode_000008.parquet",
+      "valid_frames": 2391,
+      "l2_score": 0.0
+    },
+    {
+      "episode_name": "episode_000009.parquet",
+      "valid_frames": 1740,
+      "l2_score": 0.0
+    }
+  ],
+  "dataset": "toutV2.1",
+  "dataset_path": "D:\\datasets\\toutV2.1"
+}
